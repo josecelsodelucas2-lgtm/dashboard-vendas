@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusSales AI | Executive Sales Dashboard</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b0f19;
+      color: #f1f5f9;
+    }
+    .glass-card {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+    }
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6366f1;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-indigo-600 selection:text-white">
+
+  <header class="sticky top-0 z-40 bg-[#0b0f19]/90 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo Brand -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
+            <i class="fa-solid fa-chart-pie text-lg"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-base font-extrabold tracking-tight text-white">NexusSales</span>
+              <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Enterprise BI</span>
+            </div>
+            <p class="text-xs text-slate-400">Inteligência Comercial & Gestão de Performance</p>
+          </div>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="flex items-center gap-3">
+          <div class="hidden md:flex items-center gap-2 text-xs text-slate-400 bg-slate-900/80 px-3.5 py-1.5 rounded-lg border border-slate-800">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            Base Operacional Auditada: <strong class="text-slate-200">2024 - 2026</strong>
+          </div>
+          <button id="btnExportCSVHeader" class="flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg shadow-md shadow-indigo-600/20 transition active:scale-95">
+            <i class="fa-solid fa-download"></i>
+            <span class="hidden sm:inline">Exportar CSV</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1 w-full">
+
+    <!-- Strategic Context Banner -->
+    <div class="relative overflow-hidden rounded-2xl p-6 sm:p-8 bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950/80 border border-slate-800 glass-card">
+      <div class="relative z-10 max-w-3xl space-y-2">
+        <div class="inline-flex items-center gap-2 text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+          <i class="fa-solid fa-compass"></i> Tomada de Decisão Orientada por Perguntas
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Painel Executivo de Vendas & Rentabilidade</h2>
+        <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+          Esta aplicação responde diretamente a três perguntas críticas para os comitês de crescimento: liderança de produto por margem, oscilação temporal com sazonalidade e liquidez por canal de pagamento.
+        </p>
+      </div>
+      <div class="absolute -right-16 -top-16 w-64 h-64 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    </div>
+
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      
+      <!-- KPI 1: Receita Total -->
+      <div class="glass-card rounded-2xl p-5 transition-all">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-slate-400">Receita Bruta Total</span>
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            <i class="fa-solid fa-brazilian-real-sign text-sm"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <p id="kpiRevenue" class="text-2xl font-black text-white tracking-tight">R$ 0,00</p>
+          <div class="flex items-center gap-1.5 mt-2 text-xs text-emerald-400 font-medium">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+            <span>Meta de faturamento superada</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI 2: Quantidade de Vendas -->
+      <div class="glass-card rounded-2xl p-5 transition-all">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-slate-400">Volume de Transações</span>
+          <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
+            <i class="fa-solid fa-cart-shopping text-sm"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <p id="kpiOrders" class="text-2xl font-black text-white tracking-tight">0</p>
+          <div class="flex items-center gap-1.5 mt-2 text-xs text-indigo-400 font-medium">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span id="kpiOrdersLabel">Pedidos filtrados</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI 3: Ticket Médio -->
+      <div class="glass-card rounded-2xl p-5 transition-all">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-slate-400">Ticket Médio por Pedido</span>
+          <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
+            <i class="fa-solid fa-receipt text-sm"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <p id="kpiTicket" class="text-2xl font-black text-white tracking-tight">R$ 0,00</p>
+          <div class="flex items-center gap-1.5 mt-2 text-xs text-amber-400 font-medium">
+            <i class="fa-solid fa-bullseye"></i>
+            <span>Valor médio por transação</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI 4: Margem Média -->
+      <div class="glass-card rounded-2xl p-5 transition-all">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-slate-400">Margem Média Estimada</span>
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
+            <i class="fa-solid fa-percent text-sm"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <p id="kpiMargin" class="text-2xl font-black text-white tracking-tight">0,0%</p>
+          <div class="flex items-center gap-1.5 mt-2 text-xs text-cyan-400 font-medium">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Saúde operacional sólida</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="glass-card rounded-2xl p-5 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-indigo-400"></i>
+          <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-200">Painel de Segmentação & Filtros Dinâmicos</h3>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="filteredRecordsBadge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-indigo-300 border border-slate-700">
+            Carregando registros...
+          </span>
+          <button id="btnResetFilters" class="text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 px-3 py-1.5 rounded-lg border border-rose-500/20 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-rotate-left"></i> Limpar Filtros
+          </button>
+        </div>
+      </div>
+
+      <!-- Select Filters Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Model Filter -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1.5">Modelo / Categoria</label>
+          <select id="filterModel" class="w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs sm:text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition cursor-pointer">
+            <option value="ALL">Todos os Modelos</option>
+          </select>
+        </div>
+
+        <!-- City Filter -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1.5">Região / Cidade</label>
+          <select id="filterCity" class="w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs sm:text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition cursor-pointer">
+            <option value="ALL">Todas as Cidades</option>
+          </select>
+        </div>
+
+        <!-- Year Filter -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1.5">Ano de Exercício</label>
+          <select id="filterYear" class="w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs sm:text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition cursor-pointer">
+            <option value="ALL">Todos os Anos</option>
+          </select>
+        </div>
+
+        <!-- Payment Method Filter -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1.5">Método de Pagamento</label>
+          <select id="filterPayment" class="w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs sm:text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition cursor-pointer">
+            <option value="ALL">Todos os Métodos</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    
+    <!-- Pergunta 1: Modelo/Categoria que gera maior volume financeiro e margem -->
+    <section class="glass-card rounded-2xl p-6 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+        <div class="space-y-1">
+          <div class="inline-flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+            <i class="fa-solid fa-circle-question"></i> Pergunta de Negócio #1
+          </div>
+          <h3 class="text-base sm:text-lg font-bold text-white">Qual categoria/modelo gera maior faturamento e traz melhor retorno?</h3>
+          <p class="text-xs text-slate-400">Compara o faturamento total acumulado por modelo de produto e detalha o produto de maior retorno.</p>
+        </div>
+        <div class="text-right">
+          <span class="text-xs text-slate-400 block">Líder em Vendas:</span>
+          <span id="topModelText" class="text-sm font-extrabold text-indigo-400">Calculando...</span>
+        </div>
+      </div>
+      <div class="h-80 w-full relative">
+        <canvas id="chartModels"></canvas>
+      </div>
+    </section>
+
+    <!-- Perguntas 2 & 3: Grade com Gráfico Temporal e Rosca de Pagamento -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Pergunta 2: Sazonalidade e Tendência Temporal -->
+      <section class="lg:col-span-7 glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4">
+        <div class="space-y-1 pb-3 border-b border-slate-800">
+          <div class="inline-flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+            <i class="fa-solid fa-circle-question"></i> Pergunta de Negócio #2
+          </div>
+          <h3 class="text-base sm:text-lg font-bold text-white">Como a sazonalidade e a curva de vendas evoluem com o tempo?</h3>
+          <p class="text-xs text-slate-400">Evidencia acelerações de receita ao longo dos meses para prever estoque e fluxo de caixa futuro.</p>
+        </div>
+        <div class="h-72 w-full relative">
+          <canvas id="chartTimeline"></canvas>
+        </div>
+      </section>
+
+      <!-- Pergunta 3: Distribuição dos Métodos de Pagamento e Liquidez -->
+      <section class="lg:col-span-5 glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4">
+        <div class="space-y-1 pb-3 border-b border-slate-800">
+          <div class="inline-flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+            <i class="fa-solid fa-circle-question"></i> Pergunta de Negócio #3
+          </div>
+          <h3 class="text-base sm:text-lg font-bold text-white">Qual a adesão e representatividade dos métodos de pagamento?</h3>
+          <p class="text-xs text-slate-400">Permite calibrar descontos para pagamentos à vista (PIX) vs. custo de antecipação de cartão.</p>
+        </div>
+        <div class="h-72 w-full relative flex items-center justify-center">
+          <canvas id="chartPayments"></canvas>
+        </div>
+      </section>
+
+    </div>
+
+    <section class="glass-card rounded-2xl overflow-hidden">
+      <div class="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-sm sm:text-base font-bold text-white">Detalhamento Transacional Auditado</h3>
+          <p class="text-xs text-slate-400">Registros individuais filtrados com dados de receita e margem estimada.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="relative w-full sm:w-64">
+            <input type="text" id="tableSearch" placeholder="Buscar por pedido, cidade, modelo..." class="w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl pl-9 pr-3 py-2 focus:outline-none focus:border-indigo-500">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm text-slate-300">
+          <thead class="bg-slate-900/80 text-[11px] uppercase tracking-wider text-slate-400 font-semibold border-b border-slate-800">
+            <tr>
+              <th class="py-3 px-4">Pedido ID</th>
+              <th class="py-3 px-4">Data</th>
+              <th class="py-3 px-4">Modelo</th>
+              <th class="py-3 px-4">Cidade</th>
+              <th class="py-3 px-4">Pagamento</th>
+              <th class="py-3 px-4 text-center">Qtd</th>
+              <th class="py-3 px-4 text-right">Margem</th>
+              <th class="py-3 px-4 text-right">Valor Total</th>
+            </tr>
+          </thead>
+          <tbody id="transactionsTableBody" class="divide-y divide-slate-800/60 font-normal">
+            <!-- Dynamic Rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Footer -->
+      <div class="p-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+        <div>
+          Mostrando <span id="pageRangeText" class="font-semibold text-slate-200">0 - 0</span> de <span id="pageTotalText" class="font-semibold text-slate-200">0</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btnPrevPage" class="px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-800 text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition">
+            Anterior
+          </button>
+          <span id="currentPageIndicator" class="font-semibold text-slate-200">Pág 1</span>
+          <button id="btnNextPage" class="px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-800 text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition">
+            Próxima
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+    <p>NexusSales BI System • Arquivo Único Compilado para Publicação Automática no GitHub Pages</p>
+  </footer>
+
+  <script>
+    /* Base de dados mockada realista de vendas (2024 a 2026) */
+    const SALES_DATABASE = [
+      { id: "PED-2401", date: "2024-01-15", year: 2024, month: "2024-01", model: "Alpha Sedan", city: "São Paulo", payment: "Cartão de Crédito", qty: 1, unitPrice: 85000, total: 85000, marginPct: 18.5 },
+      { id: "PED-2402", date: "2024-02-10", year: 2024, month: "2024-02", model: "Titan SUV", city: "Rio de Janeiro", payment: "PIX", qty: 1, unitPrice: 125000, total: 125000, marginPct: 22.0 },
+      { id: "PED-2403", date: "2024-02-28", year: 2024, month: "2024-02", model: "Urban Compact", city: "Curitiba", payment: "Boleto", qty: 2, unitPrice: 55000, total: 110000, marginPct: 14.0 },
+      { id: "PED-2404", date: "2024-03-12", year: 2024, month: "2024-03", model: "Apex Sport", city: "Belo Horizonte", payment: "Cartão de Crédito", qty: 1, unitPrice: 175000, total: 175000, marginPct: 25.5 },
+      { id: "PED-2405", date: "2024-04-05", year: 2024, month: "2024-04", model: "Alpha Sedan", city: "Salvador", payment: "PIX", qty: 1, unitPrice: 85000, total: 85000, marginPct: 18.0 },
+      { id: "PED-2406", date: "2024-05-20", year: 2024, month: "2024-05", model: "Titan SUV", city: "São Paulo", payment: "Cartão Parcelado", qty: 2, unitPrice: 125000, total: 250000, marginPct: 21.5 },
+      { id: "PED-2407", date: "2024-06-18", year: 2024, month: "2024-06", model: "Volt Elétrico", city: "Curitiba", payment: "PIX", qty: 1, unitPrice: 195000, total: 195000, marginPct: 26.0 },
+      { id: "PED-2408", date: "2024-07-09", year: 2024, month: "2024-07", model: "Urban Compact", city: "São Paulo", payment: "Cartão de Crédito", qty: 3, unitPrice: 55000, total: 165000, marginPct: 15.0 },
+      { id: "PED-2409", date: "2024-08-22", year: 2024, month: "2024-08", model: "Alpha Sedan", city: "Belo Horizonte", payment: "PIX", qty: 2, unitPrice: 86000, total: 172000, marginPct: 19.0 },
+      { id: "PED-2410", date: "2024-09-14", year: 2024, month: "2024-09", model: "Titan SUV", city: "Rio de Janeiro", payment: "Cartão Parcelado", qty: 1, unitPrice: 126000, total: 126000, marginPct: 21.0 },
+      { id: "PED-2411", date: "2024-10-30", year: 2024, month: "2024-10", model: "Volt Elétrico", city: "São Paulo", payment: "PIX", qty: 2, unitPrice: 195000, total: 390000, marginPct: 26.5 },
+      { id: "PED-2412", date: "2024-11-19", year: 2024, month: "2024-11", model: "Apex Sport", city: "Curitiba", payment: "Cartão de Crédito", qty: 1, unitPrice: 178000, total: 178000, marginPct: 25.0 },
+      { id: "PED-2413", date: "2024-12-08", year: 2024, month: "2024-12", model: "Urban Compact", city: "Salvador", payment: "Boleto", qty: 2, unitPrice: 56000, total: 112000, marginPct: 14.5 },
+      
+      { id: "PED-2501", date: "2025-01-20", year: 2025, month: "2025-01", model: "Alpha Sedan", city: "São Paulo", payment: "PIX", qty: 2, unitPrice: 89000, total: 178000, marginPct: 19.5 },
+      { id: "PED-2502", date: "2025-02-14", year: 2025, month: "2025-02", model: "Titan SUV", city: "Curitiba", payment: "Cartão de Crédito", qty: 1, unitPrice: 132000, total: 132000, marginPct: 22.5 },
+      { id: "PED-2503", date: "2025-03-03", year: 2025, month: "2025-03", model: "Volt Elétrico", city: "Rio de Janeiro", payment: "Cartão Parcelado", qty: 1, unitPrice: 205000, total: 205000, marginPct: 27.0 },
+      { id: "PED-2504", date: "2025-03-27", year: 2025, month: "2025-03", model: "Urban Compact", city: "Belo Horizonte", payment: "PIX", qty: 3, unitPrice: 58000, total: 174000, marginPct: 15.0 },
+      { id: "PED-2505", date: "2025-04-16", year: 2025, month: "2025-04", model: "Apex Sport", city: "São Paulo", payment: "Cartão de Crédito", qty: 1, unitPrice: 188000, total: 188000, marginPct: 25.0 },
+      { id: "PED-2506", date: "2025-05-11", year: 2025, month: "2025-05", model: "Titan SUV", city: "Salvador", payment: "PIX", qty: 2, unitPrice: 132000, total: 264000, marginPct: 22.0 },
+      { id: "PED-2507", date: "2025-06-25", year: 2025, month: "2025-06", model: "Alpha Sedan", city: "Rio de Janeiro", payment: "Boleto", qty: 1, unitPrice: 89000, total: 89000, marginPct: 18.5 },
+      { id: "PED-2508", date: "2025-07-15", year: 2025, month: "2025-07", model: "Volt Elétrico", city: "São Paulo", payment: "PIX", qty: 2, unitPrice: 205000, total: 410000, marginPct: 27.5 },
+      { id: "PED-2509", date: "2025-08-04", year: 2025, month: "2025-08", model: "Urban Compact", city: "Curitiba", payment: "Cartão Parcelado", qty: 4, unitPrice: 58000, total: 232000, marginPct: 15.5 },
+      { id: "PED-2510", date: "2025-09-18", year: 2025, month: "2025-09", model: "Apex Sport", city: "Belo Horizonte", payment: "Cartão de Crédito", qty: 1, unitPrice: 188000, total: 188000, marginPct: 25.5 },
+      { id: "PED-2511", date: "2025-10-22", year: 2025, month: "2025-10", model: "Titan SUV", city: "São Paulo", payment: "PIX", qty: 3, unitPrice: 134000, total: 402000, marginPct: 23.0 },
+      { id: "PED-2512", date: "2025-11-12", year: 2025, month: "2025-11", model: "Alpha Sedan", city: "Salvador", payment: "Cartão de Crédito", qty: 2, unitPrice: 91000, total: 182000, marginPct: 19.0 },
+      { id: "PED-2513", date: "2025-12-05", year: 2025, month: "2025-12", model: "Volt Elétrico", city: "Curitiba", payment: "PIX", qty: 2, unitPrice: 208000, total: 416000, marginPct: 27.0 },
+
+      { id: "PED-2601", date: "2026-01-14", year: 2026, month: "2026-01", model: "Volt Elétrico", city: "São Paulo", payment: "PIX", qty: 3, unitPrice: 215000, total: 645000, marginPct: 28.0 },
+      { id: "PED-2602", date: "2026-01-29", year: 2026, month: "2026-01", model: "Titan SUV", city: "Rio de Janeiro", payment: "Cartão de Crédito", qty: 2, unitPrice: 139000, total: 278000, marginPct: 22.5 },
+      { id: "PED-2603", date: "2026-02-18", year: 2026, month: "2026-02", model: "Alpha Sedan", city: "Curitiba", payment: "PIX", qty: 2, unitPrice: 93000, total: 186000, marginPct: 19.0 },
+      { id: "PED-2604", date: "2026-03-09", year: 2026, month: "2026-03", model: "Urban Compact", city: "Belo Horizonte", payment: "Boleto", qty: 3, unitPrice: 62000, total: 186000, marginPct: 15.0 },
+      { id: "PED-2605", date: "2026-03-24", year: 2026, month: "2026-03", model: "Apex Sport", city: "São Paulo", payment: "Cartão Parcelado", qty: 1, unitPrice: 198000, total: 198000, marginPct: 26.0 },
+      { id: "PED-2606", date: "2026-04-12", year: 2026, month: "2026-04", model: "Titan SUV", city: "Salvador", payment: "Cartão de Crédito", qty: 2, unitPrice: 139000, total: 278000, marginPct: 23.0 },
+      { id: "PED-2607", date: "2026-05-07", year: 2026, month: "2026-05", model: "Volt Elétrico", city: "Rio de Janeiro", payment: "PIX", qty: 2, unitPrice: 215000, total: 430000, marginPct: 28.5 },
+      { id: "PED-2608", date: "2026-05-28", year: 2026, month: "2026-05", model: "Alpha Sedan", city: "São Paulo", payment: "PIX", qty: 3, unitPrice: 94000, total: 282000, marginPct: 19.5 },
+      { id: "PED-2609", date: "2026-06-15", year: 2026, month: "2026-06", model: "Urban Compact", city: "Curitiba", payment: "Cartão de Crédito", qty: 4, unitPrice: 62000, total: 248000, marginPct: 15.5 },
+      { id: "PED-2610", date: "2026-07-03", year: 2026, month: "2026-07", model: "Apex Sport", city: "São Paulo", payment: "PIX", qty: 2, unitPrice: 199000, total: 398000, marginPct: 26.5 },
+      { id: "PED-2611", date: "2026-08-11", year: 2026, month: "2026-08", model: "Titan SUV", city: "Belo Horizonte", payment: "Cartão Parcelado", qty: 2, unitPrice: 141000, total: 282000, marginPct: 22.8 },
+      { id: "PED-2612", date: "2026-08-29", year: 2026, month: "2026-08", model: "Volt Elétrico", city: "Curitiba", payment: "PIX", qty: 3, unitPrice: 218000, total: 654000, marginPct: 28.5 },
+      { id: "PED-2613", date: "2026-09-18", year: 2026, month: "2026-09", model: "Alpha Sedan", city: "Salvador", payment: "Cartão de Crédito", qty: 2, unitPrice: 95000, total: 190000, marginPct: 19.2 }
+    ];
+
+    let filteredData = [...SALES_DATABASE];
+    let currentPage = 1;
+    const itemsPerPage = 6;
+
+    let chartModels = null;
+    let chartTimeline = null;
+    let chartPayments = null;
+
+    const currencyFmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+    const numberFmt = new Intl.NumberFormat('pt-BR');
+
+    function setupFilterDropdowns() {
+      const models = [...new Set(SALES_DATABASE.map(item => item.model))].sort();
+      const cities = [...new Set(SALES_DATABASE.map(item => item.city))].sort();
+      const years = [...new Set(SALES_DATABASE.map(item => item.year))].sort((a,b) => b - a);
+      const payments = [...new Set(SALES_DATABASE.map(item => item.payment))].sort();
+
+      const selectModel = document.getElementById('filterModel');
+      const selectCity = document.getElementById('filterCity');
+      const selectYear = document.getElementById('filterYear');
+      const selectPayment = document.getElementById('filterPayment');
+
+      models.forEach(m => selectModel.innerHTML += `<option value="${m}">${m}</option>`);
+      cities.forEach(c => selectCity.innerHTML += `<option value="${c}">${c}</option>`);
+      years.forEach(y => selectYear.innerHTML += `<option value="${y}">${y}</option>`);
+      payments.forEach(p => selectPayment.innerHTML += `<option value="${p}">${p}</option>`);
+    }
+
+    function applyFiltering() {
+      const mVal = document.getElementById('filterModel').value;
+      const cVal = document.getElementById('filterCity').value;
+      const yVal = document.getElementById('filterYear').value;
+      const pVal = document.getElementById('filterPayment').value;
+      const qVal = document.getElementById('tableSearch').value.toLowerCase().trim();
+
+      filteredData = SALES_DATABASE.filter(item => {
+        const matchesModel = mVal === 'ALL' || item.model === mVal;
+        const matchesCity = cVal === 'ALL' || item.city === cVal;
+        const matchesYear = yVal === 'ALL' || item.year.toString() === yVal;
+        const matchesPayment = pVal === 'ALL' || item.payment === pVal;
+
+        let matchesSearch = true;
+        if (qVal) {
+          matchesSearch = item.id.toLowerCase().includes(qVal) ||
+                          item.model.toLowerCase().includes(qVal) ||
+                          item.city.toLowerCase().includes(qVal) ||
+                          item.payment.toLowerCase().includes(qVal);
+        }
+
+        return matchesModel && matchesCity && matchesYear && matchesPayment && matchesSearch;
+      });
+
+      document.getElementById('filteredRecordsBadge').textContent = `${filteredData.length} de ${SALES_DATABASE.length} registros`;
+
+      updateKPICards();
+      renderCharts();
+      currentPage = 1;
+      renderTableRows();
+    }
+
+    function updateKPICards() {
+      const totalRev = filteredData.reduce((acc, curr) => acc + curr.total, 0);
+      const totalOrders = filteredData.length;
+      const avgTicket = totalOrders > 0 ? (totalRev / totalOrders) : 0;
+      
+      const weightedMarginSum = filteredData.reduce((acc, curr) => acc + (curr.total * (curr.marginPct / 100)), 0);
+      const avgMargin = totalRev > 0 ? ((weightedMarginSum / totalRev) * 100) : 0;
+
+      document.getElementById('kpiRevenue').textContent = currencyFmt.format(totalRev);
+      document.getElementById('kpiOrders').textContent = numberFmt.format(totalOrders);
+      document.getElementById('kpiTicket').textContent = currencyFmt.format(avgTicket);
+      document.getElementById('kpiMargin').textContent = `${avgMargin.toFixed(1)}%`;
+      document.getElementById('kpiOrdersLabel').textContent = `${filteredData.length} transações no recorte`;
+    }
+
+    function renderCharts() {
+      const textColor = '#94a3b8';
+      const gridColor = 'rgba(255, 255, 255, 0.06)';
+
+      /* 1. Gráfico de Barras Horizontais: Faturamento por Modelo */
+      const modelMap = {};
+      filteredData.forEach(d => {
+        modelMap[d.model] = (modelMap[d.model] || 0) + d.total;
+      });
+
+      const sortedModels = Object.keys(modelMap).sort((a,b) => modelMap[b] - modelMap[a]);
+      const sortedRevenues = sortedModels.map(m => modelMap[m]);
+
+      const topModelText = document.getElementById('topModelText');
+      if (sortedModels.length > 0) {
+        topModelText.textContent = `${sortedModels[0]} (${currencyFmt.format(modelMap[sortedModels[0]])})`;
+      } else {
+        topModelText.textContent = "Nenhum dado encontrado";
+      }
+
+      if (chartModels) chartModels.destroy();
+      const ctxModels = document.getElementById('chartModels').getContext('2d');
+      chartModels = new Chart(ctxModels, {
+        type: 'bar',
+        data: {
+          labels: sortedModels,
+          datasets: [{
+            label: 'Receita Total',
+            data: sortedRevenues,
+            backgroundColor: '#6366f1',
+            hoverBackgroundColor: '#818cf8',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` Receita: ${currencyFmt.format(ctx.raw)}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: gridColor },
+              ticks: {
+                color: textColor,
+                callback: (v) => 'R$ ' + (v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v)
+              }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: textColor }
+            }
+          }
+        }
+      });
+
+      /* 2. Gráfico de Linha/Área Temporal */
+      const timelineMap = {};
+      filteredData.forEach(d => {
+        timelineMap[d.month] = (timelineMap[d.month] || 0) + d.total;
+      });
+
+      const sortedMonths = Object.keys(timelineMap).sort();
+      const monthValues = sortedMonths.map(m => timelineMap[m]);
+
+      if (chartTimeline) chartTimeline.destroy();
+      const ctxTime = document.getElementById('chartTimeline').getContext('2d');
+      
+      const grad = ctxTime.createLinearGradient(0, 0, 0, 250);
+      grad.addColorStop(0, 'rgba(99, 102, 241, 0.45)');
+      grad.addColorStop(1, 'rgba(99, 102, 241, 0.02)');
+
+      chartTimeline = new Chart(ctxTime, {
+        type: 'line',
+        data: {
+          labels: sortedMonths,
+          datasets: [{
+            label: 'Faturamento',
+            data: monthValues,
+            fill: true,
+            backgroundColor: grad,
+            borderColor: '#6366f1',
+            borderWidth: 2.5,
+            tension: 0.35,
+            pointBackgroundColor: '#4f46e5',
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` Receita: ${currencyFmt.format(ctx.raw)}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: textColor }
+            },
+            y: {
+              grid: { color: gridColor },
+              ticks: {
+                color: textColor,
+                callback: (v) => 'R$ ' + (v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v)
+              }
+            }
+          }
+        }
+      });
+
+      /* 3. Gráfico Donut de Métodos de Pagamento */
+      const payMap = {};
+      filteredData.forEach(d => {
+        payMap[d.payment] = (payMap[d.payment] || 0) + d.total;
+      });
+
+      const payLabels = Object.keys(payMap);
+      const payValues = payLabels.map(p => payMap[p]);
+
+      if (chartPayments) chartPayments.destroy();
+      const ctxPay = document.getElementById('chartPayments').getContext('2d');
+      chartPayments = new Chart(ctxPay, {
+        type: 'doughnut',
+        data: {
+          labels: payLabels,
+          datasets: [{
+            data: payValues,
+            backgroundColor: ['#10b981', '#6366f1', '#f59e0b', '#06b6d4'],
+            borderWidth: 2,
+            borderColor: '#111827'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '68%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: textColor, boxWidth: 12, padding: 12 }
+            },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.label}: ${currencyFmt.format(ctx.raw)}`
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderTableRows() {
+      const tbody = document.getElementById('transactionsTableBody');
+      tbody.innerHTML = '';
+
+      const totalItems = filteredData.length;
+      const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedItems = filteredData.slice(startIndex, startIndex + itemsPerPage);
+
+      if (paginatedItems.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="py-8 text-center text-slate-500">
+              <i class="fa-solid fa-box-open text-3xl mb-2 block"></i>
+              Nenhuma transação atende aos filtros atuais.
+            </td>
+          </tr>
+        `;
+      } else {
+        paginatedItems.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-800/40 transition-colors';
+          tr.innerHTML = `
+            <td class="py-3 px-4 font-mono text-indigo-400 font-semibold">${item.id}</td>
+            <td class="py-3 px-4">${item.date}</td>
+            <td class="py-3 px-4 font-medium text-white">${item.model}</td>
+            <td class="py-3 px-4">${item.city}</td>
+            <td class="py-3 px-4">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
+                ${item.payment}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-center font-bold">${item.qty}</td>
+            <td class="py-3 px-4 text-right text-emerald-400 font-semibold">${item.marginPct.toFixed(1)}%</td>
+            <td class="py-3 px-4 text-right font-black text-white">${currencyFmt.format(item.total)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      const start = totalItems === 0 ? 0 : startIndex + 1;
+      const end = Math.min(startIndex + itemsPerPage, totalItems);
+      document.getElementById('pageRangeText').textContent = `${start} - ${end}`;
+      document.getElementById('pageTotalText').textContent = totalItems;
+      document.getElementById('currentPageIndicator').textContent = `Pág ${currentPage} de ${totalPages}`;
+
+      document.getElementById('btnPrevPage').disabled = currentPage <= 1;
+      document.getElementById('btnNextPage').disabled = currentPage >= totalPages;
+    }
+
+    function exportToCSV() {
+      if (filteredData.length === 0) return;
+
+      const headers = ["ID", "Data", "Ano", "Mes", "Modelo", "Cidade", "Metodo_Pagamento", "Quantidade", "Preco_Unitario", "Total", "Margem_Pct"];
+      const rows = filteredData.map(d => [
+        d.id,
+        d.date,
+        d.year,
+        d.month,
+        `"${d.model}"`,
+        `"${d.city}"`,
+        `"${d.payment}"`,
+        d.qty,
+        d.unitPrice,
+        d.total,
+        d.marginPct
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+        + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `nexus_sales_report_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function resetAllFilters() {
+      document.getElementById('filterModel').value = 'ALL';
+      document.getElementById('filterCity').value = 'ALL';
+      document.getElementById('filterYear').value = 'ALL';
+      document.getElementById('filterPayment').value = 'ALL';
+      document.getElementById('tableSearch').value = '';
+      applyFiltering();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setupFilterDropdowns();
+      applyFiltering();
+
+      ['filterModel', 'filterCity', 'filterYear', 'filterPayment'].forEach(id => {
+        document.getElementById(id).addEventListener('change', applyFiltering);
+      });
+
+      document.getElementById('tableSearch').addEventListener('input', applyFiltering);
+      document.getElementById('btnResetFilters').addEventListener('click', resetAllFilters);
+      document.getElementById('btnExportCSVHeader').addEventListener('click', exportToCSV);
+
+      document.getElementById('btnPrevPage').addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderTableRows();
+        }
+      });
+
+      document.getElementById('btnNextPage').addEventListener('click', () => {
+        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderTableRows();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
