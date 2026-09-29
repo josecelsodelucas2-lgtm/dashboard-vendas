@@ -61,11 +61,16 @@ Antes da integração no código da aplicação, a base de dados passou pelas se
 
 ### Visão Geral da Dashboard
 <img width="1920" height="1032" alt="Captura de tela 2026-09-29 153643 yu" src="https://github.com/user-attachments/assets/79cbfc9d-3895-4d71-b4ae-96e74b65ac0b" />
+<img width="1920" height="1032" alt="imagem" src="https://github.com/user-attachments/assets/a4004f0b-15a8-4a23-b9ea-06e66edea853" />
 
 
 
 ### Aplicação de Filtros Combinados
-*(Arraste a captura com filtros aplicados para este local no GitHub para inserir a imagem)*
+
+<img width="1920" height="1032" alt="solap" src="https://github.com/user-attachments/assets/b0c8a819-81de-4972-95aa-43810dfbb6e9" />
+<img width="1920" height="1032" alt="titan" src="https://github.com/user-attachments/assets/7c515692-cf6c-49f9-a2c9-a305afb61b1e" />
+<img width="1920" height="1032" alt="Captura de tela 2026-09-29 154631" src="https://github.com/user-attachments/assets/bbfc2ab3-a233-4c6f-94d0-d11ed6bbba00" />
+<img width="1920" height="1032" alt="imagem" src="https://github.com/user-attachments/assets/221b8583-7d0c-4971-b9ce-e8d0e250485b" />
 
 ---
 
